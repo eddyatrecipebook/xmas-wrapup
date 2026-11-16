@@ -127,8 +127,9 @@ export function parseCheckout(
   const lastName = text(b.lastName, 80);
   const email = text(b.email, 200).toLowerCase();
   const phone = text(b.phone, 40);
-  if (!firstName || !lastName) {
-    return { ok: false, error: "Please enter your first and last name." };
+  // Apple Pay and Google Pay can supply a single name, so only the first is required.
+  if (!firstName) {
+    return { ok: false, error: "Please enter your name." };
   }
   if (!isValidEmail(email)) {
     return { ok: false, error: "Please enter a valid email address." };

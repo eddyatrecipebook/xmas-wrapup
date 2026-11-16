@@ -15,6 +15,13 @@ import { AddressField, newTree, type TreeDraft } from "./AddressField";
 
 type Errors = Record<string, string>;
 
+type Contact = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+};
+
 type Payload = {
   trees: TreeInput[];
   amountPerTree: number;
@@ -93,8 +100,12 @@ export function RegisterForm({
     });
   }
 
-  /** Checks the whole form. Returns what to send, or null after showing errors. */
-  function validate(): Payload | null {
+  /**
+   * Checks the form. Returns what to send, or null after showing errors.
+   * With "wallet", the name, email and mobile number come from Apple Pay or
+   * Google Pay, so those boxes are not required.
+   */
+  function validate(mode: "card" | "wallet"): Payload | null {
     const next: Errors = {};
 
     trees.forEach((t, i) => {
@@ -118,10 +129,12 @@ export function RegisterForm({
           ? `For a gift over ${formatDollars(EVENT.maxDonation)}, please email ${EVENT.contactEmail}.`
           : `The minimum donation is $${EVENT.minDonation} per tree.`;
     }
-    if (!firstName.trim()) next.firstName = "Please enter your first name.";
-    if (!lastName.trim()) next.lastName = "Please enter your last name.";
-    if (!isValidEmail(email.trim())) next.email = "Please enter a valid email address.";
-    if (phoneDigits(phone).length < 10) next.phone = "Please enter a 10-digit mobile number.";
+    if (mode === "card") {
+      if (!firstName.trim()) next.firstName = "Please enter your first name.";
+      if (!lastName.trim()) next.lastName = "Please enter your last name.";
+      if (!isValidEmail(email.trim())) next.email = "Please enter a valid email address.";
+      if (phoneDigits(phone).length < 10) next.phone = "Please enter a 10-digit mobile number.";
+    }
 
     setErrors(next);
     if (Object.keys(next).length > 0) {
@@ -163,6 +176,92 @@ export function RegisterForm({
     : receipt
       ? "Includes a tax receipt from the London Food Bank."
       : "100% of proceeds support the London Food Bank.";
+
+  const reminder = (
+    <label className="checkbox">
+      <input
+        type="checkbox"
+        checked={smsOptIn}
+        onChange={(e) => setSmsOptIn(e.target.checked)}
+      />
+      <span>Text me a one-time reminder the day before my pickup date.</span>
+    </label>
+  );
+
+  const details = (
+    <>
+      <div className="field-row">
+        <div className="field">
+          <label className="field__label" htmlFor="first-name">
+            First name
+          </label>
+          <input
+            id="first-name"
+            className={`input${errors.firstName ? " input--error" : ""}`}
+            type="text"
+            autoComplete="given-name"
+            value={firstName}
+            onChange={(e) => {
+              setFirstName(e.target.value);
+              clearError("firstName");
+            }}
+          />
+          {errors.firstName && <p className="field__error">{errors.firstName}</p>}
+        </div>
+        <div className="field">
+          <label className="field__label" htmlFor="last-name">
+            Last name
+          </label>
+          <input
+            id="last-name"
+            className={`input${errors.lastName ? " input--error" : ""}`}
+            type="text"
+            autoComplete="family-name"
+            value={lastName}
+            onChange={(e) => {
+              setLastName(e.target.value);
+              clearError("lastName");
+            }}
+          />
+          {errors.lastName && <p className="field__error">{errors.lastName}</p>}
+        </div>
+      </div>
+      <div className="field">
+        <label className="field__label" htmlFor="email">
+          Email
+        </label>
+        <input
+          id="email"
+          className={`input${errors.email ? " input--error" : ""}`}
+          type="email"
+          autoComplete="email"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            clearError("email");
+          }}
+        />
+        {errors.email && <p className="field__error">{errors.email}</p>}
+      </div>
+      <div className="field">
+        <label className="field__label" htmlFor="phone">
+          Mobile number
+        </label>
+        <input
+          id="phone"
+          className={`input${errors.phone ? " input--error" : ""}`}
+          type="tel"
+          autoComplete="tel"
+          value={phone}
+          onChange={(e) => {
+            setPhone(e.target.value);
+            clearError("phone");
+          }}
+        />
+        {errors.phone && <p className="field__error">{errors.phone}</p>}
+      </div>
+    </>
+  );
 
   return (
     <form
@@ -332,90 +431,9 @@ export function RegisterForm({
         </p>
       </section>
 
-      <section className="card" aria-labelledby="step-details">
-        <h2 id="step-details">3. Your details</h2>
-        <div className="field-row">
-          <div className="field">
-            <label className="field__label" htmlFor="first-name">
-              First name
-            </label>
-            <input
-              id="first-name"
-              className={`input${errors.firstName ? " input--error" : ""}`}
-              type="text"
-              autoComplete="given-name"
-              value={firstName}
-              onChange={(e) => {
-                setFirstName(e.target.value);
-                clearError("firstName");
-              }}
-            />
-            {errors.firstName && <p className="field__error">{errors.firstName}</p>}
-          </div>
-          <div className="field">
-            <label className="field__label" htmlFor="last-name">
-              Last name
-            </label>
-            <input
-              id="last-name"
-              className={`input${errors.lastName ? " input--error" : ""}`}
-              type="text"
-              autoComplete="family-name"
-              value={lastName}
-              onChange={(e) => {
-                setLastName(e.target.value);
-                clearError("lastName");
-              }}
-            />
-            {errors.lastName && <p className="field__error">{errors.lastName}</p>}
-          </div>
-        </div>
-        <div className="field">
-          <label className="field__label" htmlFor="email">
-            Email
-          </label>
-          <input
-            id="email"
-            className={`input${errors.email ? " input--error" : ""}`}
-            type="email"
-            autoComplete="email"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              clearError("email");
-            }}
-          />
-          {errors.email && <p className="field__error">{errors.email}</p>}
-        </div>
-        <div className="field">
-          <label className="field__label" htmlFor="phone">
-            Mobile number
-          </label>
-          <input
-            id="phone"
-            className={`input${errors.phone ? " input--error" : ""}`}
-            type="tel"
-            autoComplete="tel"
-            value={phone}
-            onChange={(e) => {
-              setPhone(e.target.value);
-              clearError("phone");
-            }}
-          />
-          {errors.phone && <p className="field__error">{errors.phone}</p>}
-        </div>
-        <label className="checkbox">
-          <input
-            type="checkbox"
-            checked={smsOptIn}
-            onChange={(e) => setSmsOptIn(e.target.checked)}
-          />
-          <span>Text me a one-time reminder the day before my pickup date.</span>
-        </label>
-      </section>
 
       <section className="card" aria-labelledby="step-pay">
-        <h2 id="step-pay">4. Donate and confirm</h2>
+        <h2 id="step-pay">3. Donate and confirm</h2>
         <div className="summary">
           <div className="summary__row">
             <span>{summaryLine}</span>
@@ -457,6 +475,8 @@ export function RegisterForm({
             <PaySection
               validate={validate}
               ready={amountValid}
+              reminder={reminder}
+              details={details}
               label={
                 amountValid
                   ? `Donate ${formatDollars(total)} and book pickup`
@@ -465,25 +485,48 @@ export function RegisterForm({
             />
           </Elements>
         ) : (
-          <div className="notice" role="status">
-            <strong>Online payment isn&apos;t switched on yet.</strong> Check
-            back soon, or email{" "}
-            <a href={`mailto:${EVENT.contactEmail}`}>{EVENT.contactEmail}</a>.
-          </div>
+          <>
+            {details}
+            {reminder}
+            <div className="notice" role="status">
+              <strong>Online payment isn&apos;t switched on yet.</strong> Check
+              back soon, or email{" "}
+              <a href={`mailto:${EVENT.contactEmail}`}>{EVENT.contactEmail}</a>.
+            </div>
+          </>
         )}
       </section>
     </form>
   );
 }
 
+/** Splits the single name a wallet provides into first and last name. */
+function contactFromWallet(billing: {
+  name?: string;
+  email?: string;
+  phone?: string;
+} | undefined): Contact {
+  const parts = (billing?.name ?? "").trim().split(/\s+/).filter(Boolean);
+  return {
+    firstName: parts[0] ?? "",
+    lastName: parts.slice(1).join(" "),
+    email: (billing?.email ?? "").trim(),
+    phone: (billing?.phone ?? "").trim(),
+  };
+}
+
 function PaySection({
   validate,
   ready,
   label,
+  reminder,
+  details,
 }: {
-  validate: () => Payload | null;
+  validate: (mode: "card" | "wallet") => Payload | null;
   ready: boolean;
   label: string;
+  reminder: React.ReactNode;
+  details: React.ReactNode;
 }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -492,21 +535,44 @@ function PaySection({
   const [hasWallets, setHasWallets] = useState(false);
   const previousRegistration = useRef<string | null>(null);
 
-  async function pay() {
+  /**
+   * Runs the payment. For Apple Pay and Google Pay, `wallet` carries the
+   * donor's contact details and a way to tell the wallet sheet it failed.
+   */
+  async function pay(wallet?: { contact: Contact; fail: (message: string) => void }) {
     if (!stripe || !elements || busy) return;
-    const payload = validate();
-    if (!payload) {
-      setError(CHECK_FIELDS);
+
+    const stop = (message: string) => {
+      setError(message);
+      wallet?.fail(message);
+      setBusy(false);
+    };
+
+    const base = validate(wallet ? "wallet" : "card");
+    if (!base) {
+      stop(CHECK_FIELDS);
       return;
     }
+
+    let payload = base;
+    if (wallet) {
+      const c = wallet.contact;
+      if (!c.firstName || !isValidEmail(c.email) || phoneDigits(c.phone).length < 10) {
+        stop(
+          "Your wallet didn't share a name, email and mobile number. Please enter your details below and pay by card.",
+        );
+        return;
+      }
+      payload = { ...base, ...c };
+    }
+
     setBusy(true);
     setError(null);
 
     // Let Stripe check the card or wallet details first.
     const { error: submitError } = await elements.submit();
     if (submitError) {
-      setError(submitError.message ?? "Please check your payment details.");
-      setBusy(false);
+      stop(submitError.message ?? "Please check your payment details.");
       return;
     }
 
@@ -522,13 +588,11 @@ function PaySection({
       });
       data = await res.json();
       if (!res.ok || !data?.clientSecret || !data.registrationId) {
-        setError(data?.error ?? "Something went wrong. Please try again.");
-        setBusy(false);
+        stop(data?.error ?? "Something went wrong. Please try again.");
         return;
       }
     } catch {
-      setError("We couldn't reach the server. Please check your connection and try again.");
-      setBusy(false);
+      stop("We couldn't reach the server. Please check your connection and try again.");
       return;
     }
 
@@ -550,7 +614,10 @@ function PaySection({
 
   return (
     <>
-      <div style={hasWallets ? undefined : { display: "none" }}>
+      {hasWallets && reminder}
+      <div
+        style={hasWallets ? { display: "flex", flexDirection: "column", gap: 8 } : { display: "none" }}
+      >
         <ExpressCheckoutElement
           options={{
             buttonHeight: 54,
@@ -566,20 +633,34 @@ function PaySection({
             );
           }}
           onClick={(event) => {
-            // Only open Apple Pay / Google Pay once the form above is complete.
-            if (validate()) {
+            // Only the address and donation need to be filled in first; the
+            // wallet supplies the donor's name, email and mobile number.
+            if (validate("wallet")) {
               setError(null);
-              event.resolve();
+              event.resolve({
+                emailRequired: true,
+                phoneNumberRequired: true,
+                billingAddressRequired: true,
+              });
             } else {
               setError(CHECK_FIELDS);
             }
           }}
-          onConfirm={() => {
-            void pay();
+          onConfirm={(event) => {
+            void pay({
+              contact: contactFromWallet(event.billingDetails),
+              fail: (message) => event.paymentFailed({ reason: "fail", message }),
+            });
           }}
         />
+        <p className="fine-print">
+          We&apos;ll use the name, email and mobile number from your wallet.
+        </p>
       </div>
-      {hasWallets && <div className="divider">or pay by card</div>}
+      {hasWallets && (
+        <div className="divider">or enter your details and pay by card</div>
+      )}
+      {details}
       <PaymentElement
         options={{
           layout: "tabs",
@@ -588,6 +669,7 @@ function PaySection({
           defaultValues: { billingDetails: { address: { country: "CA" } } },
         }}
       />
+      {!hasWallets && reminder}
       {error && (
         <div className="notice notice--error" role="alert">
           {error}
