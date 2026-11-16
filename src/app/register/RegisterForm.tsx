@@ -653,9 +653,6 @@ function PaySection({
             });
           }}
         />
-        <p className="fine-print">
-          We&apos;ll use the name, email and mobile number from your wallet.
-        </p>
       </div>
       {hasWallets && (
         <div className="divider">or enter your details and pay by card</div>

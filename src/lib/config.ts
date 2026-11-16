@@ -12,10 +12,10 @@ export const EVENT = {
   /** Highest donation accepted per tree, in dollars. */
   maxDonation: 5000,
   /** One-tap amounts shown on the donation tiles, in dollars. */
-  presets: [20, 30, 50, 100],
+  presets: [20, 30, 50, 75, 100, 150],
   defaultPreset: 30,
   /** Total gifts at or above this amount (dollars) get a tax receipt. */
-  receiptThreshold: 50,
+  receiptThreshold: 75,
   maxTreesPerOrder: 5,
   contactEmail: "info@xmaswrapup.ca",
   charityName: "London Food Bank",
