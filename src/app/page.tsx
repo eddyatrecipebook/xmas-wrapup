@@ -57,7 +57,10 @@ export default function Home() {
       <main>
         <section className="container hero">
           <div className="hero__copy">
-            <p className="eyebrow">{EVENT.pickupDateLong} · London, Ontario</p>
+            <p className="eyebrow">
+              {EVENT.pickupDateLong}
+              <span className="eyebrow__extra"> · London, Ontario</span>
+            </p>
             <h1>Leave your tree at the curb. Leave the rest to us.</h1>
             <p className="hero__lede">
               Donate ${EVENT.minDonation} or more and our volunteers will

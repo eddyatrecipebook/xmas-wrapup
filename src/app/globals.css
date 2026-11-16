@@ -952,21 +952,195 @@ img {
   text-transform: uppercase;
 }
 
-@media (max-width: 480px) {
-  .site-header__logo {
-    height: 60px;
-  }
-  .hero {
-    gap: 40px;
-    padding-bottom: 64px;
-  }
-  .hero__badge {
-    width: 112px;
-    height: 112px;
-    border-radius: 22px;
+/* ---------- Phones ---------- */
+
+@media (max-width: 640px) {
+  .container {
+    padding-left: 20px;
+    padding-right: 20px;
   }
   .btn {
     padding: 0 24px;
     font-size: 18px;
+  }
+
+  /* Header: logo and button share one row; the in-page links are dropped. */
+  .site-header {
+    flex-wrap: nowrap;
+    gap: 12px;
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+  .site-header__logo {
+    height: 50px;
+  }
+  .site-nav {
+    flex-wrap: nowrap;
+    gap: 0;
+  }
+  .site-nav a:not(.btn) {
+    display: none;
+  }
+  .site-nav .btn {
+    min-height: 44px;
+    padding: 0 16px;
+    font-size: 15px;
+    white-space: nowrap;
+  }
+
+  /* Hero: the donate button and the counter fit on the first screen. */
+  .hero {
+    gap: 28px;
+    padding-top: 12px;
+    padding-bottom: 56px;
+  }
+  .hero__copy {
+    gap: 16px;
+    align-items: stretch;
+  }
+  .hero .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+  }
+  .eyebrow__extra {
+    display: none;
+  }
+  .hero h1 {
+    font-size: 38px;
+  }
+  .hero__lede {
+    font-size: 18px;
+  }
+  .hero__copy .btn {
+    order: 1;
+    width: 100%;
+  }
+  .spots {
+    order: 2;
+    max-width: none;
+    padding: 14px 16px;
+    gap: 10px;
+    border-radius: 16px;
+  }
+  .spots__line {
+    font-size: 16px;
+    gap: 8px;
+  }
+  .spots__number {
+    font-size: 30px;
+  }
+  .spots__bar {
+    height: 8px;
+  }
+  .spots__note {
+    display: none;
+  }
+  .hero__media {
+    padding: 0 0 18px 18px;
+  }
+  .hero__photo {
+    aspect-ratio: 4 / 3;
+    border-radius: 20px;
+  }
+  .hero__badge {
+    width: 96px;
+    height: 96px;
+    border-radius: 20px;
+    border-width: 5px;
+  }
+
+  /* Steps: compact rows with the icon beside the text. */
+  .section-title {
+    font-size: 28px;
+  }
+  .steps__inner {
+    gap: 24px;
+    padding-top: 48px;
+    padding-bottom: 48px;
+  }
+  .steps__grid {
+    gap: 12px;
+  }
+  .step {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr);
+    column-gap: 16px;
+    row-gap: 4px;
+    align-items: start;
+    padding: 16px;
+    border-radius: 18px;
+  }
+  .step img {
+    grid-row: 1 / span 3;
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+  }
+  .step > :not(img) {
+    grid-column: 2;
+  }
+  .step .eyebrow {
+    margin-top: 0;
+    font-size: 12px;
+  }
+  .step h3 {
+    font-size: 19px;
+  }
+  .step p:last-child {
+    font-size: 16px;
+  }
+
+  .impact__inner {
+    gap: 20px;
+    padding-top: 56px;
+    padding-bottom: 56px;
+  }
+  .impact .eyebrow {
+    font-size: 12px;
+  }
+  .impact h2 {
+    font-size: 30px;
+  }
+  .impact__text {
+    font-size: 18px;
+  }
+
+  .faq {
+    gap: 24px;
+    padding-top: 56px;
+    padding-bottom: 56px;
+  }
+  .faq__list details {
+    padding: 16px 0;
+  }
+  .faq__list summary {
+    font-size: 17px;
+  }
+
+  .closing__inner {
+    gap: 20px;
+    padding-top: 48px;
+    padding-bottom: 48px;
+  }
+  .closing p {
+    font-size: 17px;
+  }
+  .closing .btn {
+    width: 100%;
+  }
+
+  .site-footer__inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding-top: 28px;
+    padding-bottom: 32px;
+  }
+  .site-footer nav {
+    flex-direction: column;
+    gap: 0;
+  }
+  .site-footer nav a {
+    padding: 10px 0;
   }
 }
