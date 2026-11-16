@@ -10,6 +10,7 @@ import {
   SpotsCounterFallback,
   SpotsHeadline,
 } from "@/components/SpotsCounter";
+import { PinnedCta } from "@/components/PinnedCta";
 
 // Update these two each year. Leave SPONSORS empty to hide that section.
 const TOTAL_RAISED = "over $39,000";
@@ -70,7 +71,7 @@ export default function Home() {
             <Suspense fallback={<SpotsCounterFallback />}>
               <SpotsCounter />
             </Suspense>
-            <Link href="/register" className="btn">
+            <Link href="/register" className="btn" id="hero-cta">
               Donate and book your pickup
               <Arrow />
             </Link>
@@ -92,6 +93,9 @@ export default function Home() {
           </div>
         </section>
 
+        {/* On phones the pinned donate button travels within this block and
+            comes to rest in the closing section at the end of it. */}
+        <div className="pin-zone">
         <section id="how" className="steps">
           <div className="container steps__inner">
             <h2 className="section-title">
@@ -233,12 +237,14 @@ export default function Home() {
               </h2>
               <p>Book yours for {EVENT.pickupDateShort}.</p>
             </div>
-            <Link href="/register" className="btn">
+            <Link href="/register" className="btn closing__btn">
               Donate and book your pickup
               <Arrow />
             </Link>
           </div>
         </section>
+        <PinnedCta />
+        </div>
 
         {SPONSORS.length > 0 && (
           <section className="container sponsors">

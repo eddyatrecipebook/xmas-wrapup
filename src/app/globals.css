@@ -952,9 +952,48 @@ img {
   text-transform: uppercase;
 }
 
+/* The pinned donate button only exists on phones. */
+.pin-cta {
+  display: none;
+}
+
 /* ---------- Phones ---------- */
 
 @media (max-width: 640px) {
+  /*
+   * Pinned donate button. It sticks 16px above the bottom of the screen while
+   * the reader scrolls through .pin-zone, and its resting place is the gap
+   * left for it at the bottom of the closing section (the negative margin
+   * pulls it up into that gap). The in-section button is hidden instead.
+   */
+  .closing__btn {
+    display: none;
+  }
+  .closing .closing__inner {
+    padding-bottom: 120px;
+  }
+  .pin-cta {
+    display: block;
+    position: sticky;
+    bottom: -24px;
+    z-index: 20;
+    margin-top: -100px;
+    padding: 0 20px 40px;
+    pointer-events: none;
+  }
+  .pin-cta .btn {
+    pointer-events: auto;
+    box-shadow: 0 8px 24px rgba(10, 77, 54, 0.3);
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
+  }
+  .pin-cta.is-hidden .btn {
+    opacity: 0;
+    transform: translateY(24px);
+    pointer-events: none;
+  }
+
   .container {
     padding-left: 20px;
     padding-right: 20px;
