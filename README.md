@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Xmas Tree Wrap-Up
 
-## Getting Started
+Website for the annual London, Ontario Christmas tree pickup fundraiser in
+support of the London Food Bank. Donors give online, book a curbside pickup,
+and the site keeps a live count of the remaining pickup spots.
 
-First, run the development server:
+Built with Next.js (hosted on Vercel), Supabase (database) and Stripe
+(payments, including Apple Pay and Google Pay).
+
+## What's here
+
+| Path | What it does |
+| --- | --- |
+| `src/lib/config.ts` | Pickup date, tree cap, donation amounts, tax-receipt threshold, pickup radius. Change these each year. |
+| `src/app/page.tsx` | Home page. `TOTAL_RAISED` and `SPONSORS` are at the top of the file. |
+| `src/app/register/` | Registration form, address check, donation picker, payment, waitlist and confirmation page. |
+| `src/app/api/checkout/` | Reserves pickup spots and creates the Stripe payment. |
+| `src/app/api/stripe/webhook/` | Stripe calls this when a payment succeeds. |
+| `src/app/admin/` | Password-protected pickup list and CSV export for Dispatch. |
+| `supabase/migrations/` | Database tables and the spot-counting rules. |
+
+## Setting up
+
+1. Create a Supabase project and run the SQL in `supabase/migrations/`.
+2. Copy `.env.example` to `.env.local` and fill it in. The same variables go
+   into Vercel under Project → Settings → Environment Variables.
+3. In Stripe, add a webhook endpoint for
+   `https://<your-domain>/api/stripe/webhook` listening for
+   `payment_intent.succeeded` and `payment_intent.canceled`, and copy its
+   signing secret into `STRIPE_WEBHOOK_SECRET`.
+4. In Stripe → Settings → Payment method domains, add the site's domain so
+   Apple Pay and Google Pay appear.
+
+The site runs without any of these set: the counter shows the cap instead of a
+live number, and the payment step says it isn't switched on yet.
+
+## Running locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## How the 500-tree cap works
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Pressing pay reserves the donor's spots for 20 minutes while the payment goes
+through. Paid trees, and unpaid trees still inside that hold, count as taken.
+If the payment is never completed the spots are released automatically. The
+cap and the hold time live in the `settings` table, so they can be changed
+without a redeploy; set `registration_open` to `false` there to close
+registration early.
