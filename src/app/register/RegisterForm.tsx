@@ -552,7 +552,11 @@ function PaySection({
     <>
       <div style={hasWallets ? undefined : { display: "none" }}>
         <ExpressCheckoutElement
-          options={{ buttonHeight: 54 }}
+          options={{
+            buttonHeight: 54,
+            // Wallet row is for Apple Pay and Google Pay only.
+            paymentMethods: { link: "never", amazonPay: "never", paypal: "never", klarna: "never" },
+          }}
           onReady={({ availablePaymentMethods }) => {
             setHasWallets(
               Boolean(
