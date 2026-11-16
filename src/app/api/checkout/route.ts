@@ -104,7 +104,8 @@ export async function POST(request: Request) {
     const intent = await stripe.paymentIntents.create({
       amount: totalCents,
       currency: EVENT.currency,
-      automatic_payment_methods: { enabled: true },
+      // Cards only, which also covers Apple Pay and Google Pay.
+      payment_method_types: ["card"],
       receipt_email: input.email,
       description: `${EVENT.name} donation (${treeCount} tree pickup${treeCount === 1 ? "" : "s"})`,
       metadata: {

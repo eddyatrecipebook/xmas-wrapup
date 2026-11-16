@@ -413,6 +413,8 @@ export function RegisterForm({
               // Stripe needs a positive amount even before one is chosen.
               amount: (amountValid ? total : EVENT.minDonation) * 100,
               currency: EVENT.currency,
+              // Cards only, which also covers Apple Pay and Google Pay.
+              paymentMethodTypes: ["card"],
               appearance: {
                 theme: "stripe",
                 variables: {
@@ -558,6 +560,8 @@ function PaySection({
         options={{
           layout: "tabs",
           wallets: { applePay: "never", googlePay: "never" },
+          // Donors are in and around London, Ontario.
+          defaultValues: { billingDetails: { address: { country: "CA" } } },
         }}
       />
       {error && (
