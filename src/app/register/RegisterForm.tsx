@@ -127,7 +127,7 @@ export function RegisterForm({
       next.amount =
         amount > EVENT.maxDonation
           ? `For a gift over ${formatDollars(EVENT.maxDonation)}, please email ${EVENT.contactEmail}.`
-          : `The minimum donation is $${EVENT.minDonation} per tree.`;
+          : `Minimum donation $${EVENT.minDonation} per tree.`;
     }
     if (mode === "card") {
       if (!firstName.trim()) next.firstName = "Please enter your first name.";
@@ -419,16 +419,20 @@ export function RegisterForm({
               />
             </div>
             {(errors.amount || (customText !== "" && customAmount < EVENT.minDonation)) && (
-              <p className="field__error">
-                {errors.amount ?? `The minimum donation is $${EVENT.minDonation} per tree.`}
+              <p className="field__error" role="alert">
+                {errors.amount ?? `Minimum donation $${EVENT.minDonation} per tree.`}
               </p>
             )}
+            {!errors.amount &&
+              customAmount >= EVENT.receiptThreshold &&
+              customAmount <= EVENT.maxDonation && (
+                <p className="area-ok" role="status">
+                  Donations of ${EVENT.receiptThreshold} or more receive a tax
+                  receipt.
+                </p>
+              )}
           </div>
         )}
-        <p className="field__hint">
-          Minimum donation ${EVENT.minDonation} per tree. Gifts of $
-          {EVENT.receiptThreshold} or more receive a tax receipt.
-        </p>
       </section>
 
 
