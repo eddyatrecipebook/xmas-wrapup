@@ -105,7 +105,8 @@ export async function POST(request: Request) {
       amount: totalCents,
       currency: EVENT.currency,
       // Cards only, which also covers Apple Pay and Google Pay.
-      payment_method_types: ["card"],
+      automatic_payment_methods: { enabled: true },
+      allowed_payment_method_types: ["card"],
       receipt_email: input.email,
       description: `${EVENT.name} donation (${treeCount} tree pickup${treeCount === 1 ? "" : "s"})`,
       metadata: {

@@ -414,7 +414,7 @@ export function RegisterForm({
               amount: (amountValid ? total : EVENT.minDonation) * 100,
               currency: EVENT.currency,
               // Cards only, which also covers Apple Pay and Google Pay.
-              paymentMethodTypes: ["card"],
+              allowedPaymentMethodTypes: ["card"],
               appearance: {
                 theme: "stripe",
                 variables: {
