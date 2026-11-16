@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useSyncExternalStore } from "react";
 import {
   Elements,
   ExpressCheckoutElement,
@@ -27,6 +27,17 @@ type Payload = {
 
 const CHECK_FIELDS = "Please check the highlighted fields above.";
 
+const noopSubscribe = () => () => {};
+
+/** False on the server and during the first paint, true once the page is interactive. */
+function useHydrated(): boolean {
+  return useSyncExternalStore(
+    noopSubscribe,
+    () => true,
+    () => false,
+  );
+}
+
 export function RegisterForm({
   placesEnabled,
   stripeKey,
@@ -45,6 +56,9 @@ export function RegisterForm({
   const [smsOptIn, setSmsOptIn] = useState(true);
   const [errors, setErrors] = useState<Errors>({});
   const formRef = useRef<HTMLFormElement>(null);
+  // Anything typed before the page is interactive would be lost, so the form
+  // only accepts input once it is ready.
+  const hydrated = useHydrated();
 
   const stripePromise = useMemo(
     () => (stripeKey ? loadStripe(stripeKey) : null),
@@ -151,7 +165,13 @@ export function RegisterForm({
       : "100% of proceeds support the London Food Bank.";
 
   return (
-    <form ref={formRef} noValidate onSubmit={(e) => e.preventDefault()} style={{ display: "contents" }}>
+    <form
+      ref={formRef}
+      noValidate
+      inert={!hydrated}
+      onSubmit={(e) => e.preventDefault()}
+      style={{ display: "contents" }}
+    >
       <div className="flow__title">
         <h1>Book your tree pickup</h1>
         <p>{EVENT.pickupDateLong} · between 7 AM and midnight</p>
