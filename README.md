@@ -17,6 +17,7 @@ Built with Next.js (hosted on Vercel), Supabase (database) and Stripe
 | `src/app/api/checkout/` | Reserves pickup spots and creates the Stripe payment. |
 | `src/app/api/stripe/webhook/` | Stripe calls this when a payment succeeds. |
 | `src/app/admin/` | Password-protected pickup list and CSV export for Dispatch. |
+| `src/emails/` | The donation confirmation and day-before reminder emails. Preview them at `/admin/emails`. They are designed but not sent yet. |
 | `supabase/migrations/` | Database tables and the spot-counting rules. |
 
 ## Setting up

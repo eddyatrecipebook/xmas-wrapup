@@ -18,6 +18,8 @@ export const EVENT = {
   receiptThreshold: 75,
   maxTreesPerOrder: 5,
   contactEmail: "info@xmaswrapup.ca",
+  /** Where the site is published. Emails link here and load their images from here. */
+  siteUrl: "https://xmaswrapup.ca",
   charityName: "London Food Bank",
 } as const;
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Suspense } from "react";
 import { connection } from "next/server";
 import { getPaidPickups } from "@/lib/admin";
@@ -31,6 +32,7 @@ async function Pickups() {
         <span>{formatDollars(Math.round(raised))} raised</span>
         <span>{formatDollars(Math.round(average * 100) / 100)} average per tree</span>
         <a href="/admin/export">Download CSV for Dispatch</a>
+        <Link href="/admin/emails">Preview donor emails</Link>
       </div>
       <div className="admin__table-wrap">
         <table>
